@@ -1,0 +1,12 @@
+# 1.	Создать представление, содержащее фамилии студентов, поступивших в институт в указанном году и обучающихся в платной группе.
+create view v1 as select Fname from STUDENTS where Year=&Year and Plata=1;
+ 
+# 2.	Создать представление, содержащее сведения о студентах и добавить с помощью него нового студента.
+create view v2 as select * from STUDENTS;
+insert into v2 values (111117, 'Brown', 2018, '22.06.1964', '1', 5, 12500, 'Exeter');
+ 
+# 3.	Создать представление, содержащее фамилии студентов, сдавших сессию указанного номера на «отлично».
+create view v6 as select Fname, Plata, Money from STUDENTS where Num in(select Num from SESSION_HISTORY where SessNum=&SessNum and (Sub1+Sub2+Sub3)/3=5);
+ 
+# 4.	Для студентов из пункта 3, обучающихся платно, изменить (уменьшить) сумму оплаты.
+update v3 set Money=1000 where Plata=1;
