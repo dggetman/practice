@@ -1,0 +1,94 @@
+# 1.	Создать хранимую процедуру, которая выводит на экран фамилии всех студентов, поступивших между 2010 и 2012 годами.
+update STUDENTS set Year=2011 where Fname='Stark';
+update STUDENTS set Year=2011 where Fname='Brown';
+ 
+set serveroutput on;
+
+create or replace procedure Pr1
+is
+fname_students varchar2(100);
+cursor students_cursor is select Fname from STUDENTS where Year between 2010 and 2012;
+begin
+open students_cursor;
+loop
+fetch students_cursor into fname_students;
+exit when students_cursor%notfound;
+dbms_output.enable;
+dbms_output.put_line(fname_students);
+end loop;
+close students_cursor;
+end;
+/
+# Вызов процедуры: 
+call Pr1(); 
+
+# 2.	Создать хранимую процедуру, которая выполняет проверку об оплате студентов за обучение. В случае если в графе плата указано платное обучение Money вносится размер оплаты или ‘0’ в противном случае.
+create or replace procedure Pr2
+is
+p varchar2(100);
+cursor p_cursor is select Plata from STUDENTS;
+begin
+open p_cursor;
+loop
+fetch p_cursor into p;
+exit when p_cursor%notfound;
+dbms_output.enable;
+dbms_output.put_line(p);
+update STUDENTS set Money=0 where p='0';
+update STUDENTS set Money=15000 where p='1';
+end loop;
+close p_cursor;
+end;
+/
+ 
+update STUDENTS set Money=1 where Plata='0';
+update STUDENTS set Money=0 where Plata='1';
+ 
+# Вызов процедуры: 
+call Pr2(); 
+
+# 3.	Создать хранимую процедуру, которая удаляет из базы данных студентов, у которых есть больше трёх двоек.
+insert into STUDENTS values (111114, 'Peper', 2020, '26.04.1991', '0', 5, '0', 'Miami');
+insert into SESSION_HISTORY values (111114, 1, 2, 2, 2);
+ 
+create or replace procedure Pr3
+is
+numDel number;
+cursor students_cursor is select Num from STUDENTS where Num in (select Num from SESSION_HISTORY where Sub1=2 and Sub2=2 and Sub3=2);
+begin
+open students_cursor;
+loop
+fetch students_cursor into numDel;
+exit when students_cursor%notfound;
+dbms_output.enable;
+dbms_output.put_line('Студент с номером зачётной книжки '||numDel||' удалён');
+delete from SESSION_HISTORY where Num= numDel;
+delete from STUDENTS where Num= numDel;
+end loop;
+close students_cursor;
+end;
+/
+
+# Вызов процедуры: 
+call Pr3(); 
+
+# 4.	Создать хранимую процедуру, которая в таблицу STIP (Num, Salary) добавляет запись для студентов, сдавших свою последнюю сессию без троек, с суммой назначенной стипендии. Размер стипендии задаётся как входной параметр процедуры.
+create table STIP (
+Num number,
+Salary number);
+ 
+create or replace procedure Pr4(salary in number)
+is
+num_s number;
+cursor sudents_cursor is select Num from STUDENTS where Num in (select Num from SESSION_HISTORY where Sub1>3 and Sub2>3 and Sub3>3);
+begin
+open sudents_cursor;
+loop
+fetch sudents_cursor into num_s;
+dbms_output.enable;
+dbms_output.put_line('Студент с номером зачётной книжки '||num_s||' добавлен в таблицу');
+insert into STIP values (num_s, salary);
+end loop;
+close sudents_cursor;
+end;
+/
