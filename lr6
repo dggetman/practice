@@ -1,0 +1,12 @@
+# 1.	Вывести сведения о студентах, ни разу не сдававших экзамены.
+select * from STUDENTS where not exists (select * from SESSION_HISTORY where STUDENTS.Num=SESSION_HISTORY.Num);
+ 
+# 2.	Вывести фамилии студентов старше 2 курса.
+select Fname from STUDENTS where Year>(select to_number(sysdate,'yyyy') from dual)-2;
+select Fname from STUDENTS where Year>2019-2;
+ 
+# 3.	Определить год с максимальной оплатой за обучение.
+select Year from STUDENTS where Money in (select MAX(Money) from STUDENTS);
+ 
+# 4.	Определить год поступления, когда количество поступивших превысило некоторое значение.
+select Year from STUDENTS group by Year having count(Year)>&count;
