@@ -1,0 +1,45 @@
+# 1.	Переведите БД в режим ARCHIVLOG.
+sqlplus
+sys as sysdba
+1234	
+create tablespace cattbs datafile 'C:\cattbsfile.dat' size 200M;
+create user rman identified by rman temporary tablespace temp default tablespace cattbs;
+grant connect, resource, recovery_catalog_owner to rman;
+exit
+ 
+rman target sys/1234 catalog rman/rman
+create catalog
+register database;
+exit
+ 
+connect sys/1234 as sysdba
+shutdown immediate
+startup mount
+alter database archivelog;
+alter database open;
+exit
+
+# 2.	С помощью RMAN произведите полное резервное копирование.
+rman target sys/1234 catalog rman/rman
+backup database;
+ 
+# 3.	Используя RMAN, выполните резервное копирование заданного файла данных.
+backup datafile 'C:\oraclexe\app\oracle\product\11.2.0\server\database\MYDATATS1.DAT';
+exit
+ 
+# 4.	Восстановите табличную область с помощью RMAN.
+sqlplus
+sys as sysdba
+1234
+alter tablespace users offline;
+recover tablespace users;
+alter tablespace users online;
+exit
+
+# 5.	Используя RMAN, восстановите базу данных.
+rman target sys/1234 catalog rman/rman
+shutdown immediate
+startup mount
+recover database;
+alter database open;
+exit
