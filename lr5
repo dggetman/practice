@@ -1,0 +1,18 @@
+# 1.	Вывести сведения о студентах, год поступления в институт которых равен заданному.
+select * from STUDENTS where Year = &Year; 
+# 2.	Вывести фамилии студентов и размер оплаты за обучение для студентов, обучающихся платно.
+select Fname, Money from STUDENTS where Plata=1; 
+# 3.	Вывести сведения о студентах, обучающихся платно и средний бал при поступлении которых больше заданного.
+select * from STUDENTS, SESSION_HISTORY where STUDENTS.Num=SESSION_HISTORY.Num and Plata=1 and (Sub1+Sub2+Sub3)/3>&Sub1;
+ 
+# 4.	Вывести фамилии студентов в алфавитном порядки, указанной даты рождения.
+select Fname from STUDENTS where Bday = '&Bday' order by Fname;
+ 
+# 5.	Вывести год и количество студентов, поступивших в каждом году.
+select Year, count(*) from STUDENTS group by Year;
+ 
+# 6.	Вывести фамилии студентов, сдавших сессию указанного номера с оценками не ниже 4 по всем предметам.
+select Fname from STUDENTS, SESSION_HISTORY where STUDENTS.Num=SESSION_HISTORY.Num and SessNum=&SessNum and Sub1>=4 and Sub2>=4 and Sub3>=4;
+ 
+# 7.	Создать запрос с информацией о студентах, имеющих хотя бы одну неудовлетворительную оценку.
+select * from STUDENTS where Num=(select Num from SESSION_HISTORY where Sub1<3 or Sub2<3 or Sub3<3);
