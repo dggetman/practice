@@ -1,0 +1,37 @@
+connect GDG_6206/1009
+CREATE TABLE STUDENTS
+(
+Num NUMBER(6,0) PRIMARY KEY CHECK(Num>100000),
+Fname VARCHAR(100) NOT NULL,
+Year NUMBER(4,0) NOT NULL,
+Bday DATE,
+Plata CHAR(1) DEFAULT(0) CHECK(Plata=0 or Plata=1),
+Mb NUMBER(3,2),
+Money NUMBER(5,0) DEFAULT(0),
+Address VARCHAR(200) NOT NULL
+);
+CREATE TABLE SESSION_HISTORY
+(
+Num NUMBER(6,0),
+FOREIGN KEY (Num) REFERENCES STUDENTS (Num),
+SessNum NUMBER(1) CHECK(1<=SessNum and SessNum<=8),
+Sub1 NUMBER(1,0) CHECK(Sub1=1 or Sub1=2 or Sub1=3 or Sub1=4 or Sub1=5) NOT NULL,
+Sub2 NUMBER(1,0) CHECK(Sub2=1 or Sub2=2 or Sub2=3 or Sub2=4 or Sub2=5) NOT NULL,
+Sub3 NUMBER(1,0) CHECK(Sub3=1 or Sub3=2 or Sub3=3 or Sub3=4 or Sub3=5) NOT NULL
+);
+INSERT INTO STUDENTS VALUES (‘111111’, ’BULGAKOV’, ‘2019’, ’18.05.1891’, ‘0’, ‘5’, ‘0’, ‘MOSCOW’);
+INSERT INTO STUDENTS VALUES (‘111112’, ’PELEVIN’, ‘2019’, ’22.10.1962’, ‘0’, ‘4’, ‘0’, ‘MOSCOW’);
+INSERT INTO STUDENTS VALUES (‘111113’, ’PALANIK’, ‘2019’, ’21.02.1962’, ‘1’, ‘5’, ‘1’, ‘VASHINGTON’);
+
+connect sys/1234 as sysdba
+create user GDG1_6206 identified by 10092 default tablespace TS_Getman_6206_2019;
+grant connect to GDG1_6206;
+connect GDG_6206/1009;
+grant select any table to GDG1_6206;
+grant alter any table to GDG1_6206;
+grant delete any table to GDG1_6206;
+grant insert any table to GDG1_6206;
+grant update any table to GDG1_6206;
+create synonym GDG1_6206.STUDENTS for GDG_6206.STUDENTS;
+create synonym GDG1_6206.SESSION_HISTORY for GDG_6206.SESSION_HISTORY;
+EXIT
