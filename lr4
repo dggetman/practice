@@ -1,0 +1,23 @@
+# 1.	Написать скрипт, который создает и заполняет новую таблицу (согласно варианту), при этом ключевое слово должно быть сгенерировано автоматически, остальные запрашиваются в диалоговом режиме (через параметр).
+# (Данных код находится на диске С в файле script.sql)
+# Код sqript.sql:
+CREATE SEQUENCE seq_4
+START WITH 2
+MAXVALUE 8;
+CREATE TABLE SESS_INF
+(
+Num NUMBER(1) PRIMARY KEY CHECK(1<Num or Num<=8),
+Property VARCHAR2(20) CHECK (Property='Osennya' or Property='Zimnya') NOT NULL
+);
+INSERT INTO SESS_INF VALUES (seq_4.NEXTVAL,'&Property');
+ 
+# 2.	Выполнить корректировку данных (при необходимости в связанной с ней таблице).
+UPDATE SESS_INF SET Property = 'Zimnya' WHERE Num = 2;   
+# 3.	Вывести данные из таблицы, используя метод PUT_LINE() пакета DBMS_OUTPUT.
+SET SERVEROUTPUT ON;
+BEGIN
+FOR item in (SELECT * FROM SESS_INF)
+LOOP
+DBMS_OUTPUT.PUT_LINE (item.Num ||''|| item.Property);
+END LOOP;
+END;
