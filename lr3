@@ -1,0 +1,27 @@
+# 1.	Выполните вставку 2-3 записей в первую таблицу.
+INSERT INTO STUDENTS VALUES (111111, 'Bulgacov', 2019, '18.05.1891', '0', 5, 0, 'MOSCOW');
+INSERT INTO STUDENTS VALUES (111112, 'PELEVIN', 2019, '22.10.1962', '0', 4, 0, 'MOSCOW');
+INSERT INTO STUDENTS VALUES (111113, 'PALANIK', 2019, '21.02.1962', '1', 5, 1, 'VASHINGTON');
+
+ 
+# 2.	Выполните вставку 3-5 записей в родительскую таблицу, применяя параметры.
+INSERT INTO STUDENTS (Num, Fname, Year, Bday, Plata, Mb, Money, Address) values (&Num, '&Fname ', &Year, '&Bday', '&Plata', &Mb, &Money, '&Address');
+ 
+INSERT INTO STUDENTS (Num, Fname, Year, Address) values (&Num, '&Fname', &Year, '& Address');
+ 
+INSERT INTO STUDENTS (Num, Fname, Year, Bday, Money, Address) values (&Num, '&Fname', &Year, '&Bday', &Money, '&Address');
+ 
+# 3.	Удалите 1 запись таблицы, выполните удаление еще 1 записи, используя в качестве одного из атрибутов параметр.
+delete from STUDENTS where Num=111114;
+ 
+delete from STUDENTS where Fname='&Fname';
+ 
+# 4.	Обновите одно из полей заполненной таблицы без и с применением параметра.
+update STUDENTS set Year=2017 where Num=111111;
+ 
+update STUDENTS set Fname='PELEVIN' where Num =& Num;
+ 
+# 5.	Заполните вторую таблицу 3-5 записями.
+insert into SESSION_HISTORY values (111111, 7, 5, 5, 5);
+insert into SESSION_HISTORY values (111112, 4, 5, 3, 5);
+insert into SESSION_HISTORY values (111113, 4, 5,3);
