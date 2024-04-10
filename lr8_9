@@ -1,0 +1,22 @@
+# 1.	Экспортировать объекты, принадлежащие пользователю System.
+exp system/1234 owner=(system) file=expdat1.dmp 
+
+# Импортировать объекты, принадлежащие пользователю System.
+imp system/1234 file=expdat1.dmp full=y
+
+# 2.	Выполнить экспорт созданных Вами ранее таблиц. 
+exp GDG_6206/1009 file=expdat2.dmp tables=(STUDENTS,SESSION_HISTORY,SESS_INF)
+
+# Выполнить импорт этих таблиц новому пользователю.
+imp system/1234 file=expdat2.dmp fromuser=GDG_6206 touser=GDG1_6206
+
+# 3.	Выполнить полный экспорт.
+exp system/1234 file=expdat3.dmp full=y
+
+# Выполнить полный импорт.
+imp system/1234 file=expdat3.dmp full=y
+
+# 4.	Выполнить экспорт данных из одной из созданных Вами ранее таблиц. Произвести экспорт не всех данных, а данных, удовлетворяющих какому-то условию.
+exp GDG_6206/1009 file=expdat4.dmp tables=(STUDENTS) query=\”where YEAR>2018\”
+# Осуществить перемещение этих экспортируемых данных другому пользователю.
+imp GDG1_6206/10092 file=expdat4.dmp fromuser=GDG_6206 touser=GDG1_6206
