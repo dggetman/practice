@@ -1,0 +1,67 @@
+# 1.	Создать триггер на удаление всех сессий студента при удалении его из таблицы со сведениями о студентах.
+create or replace trigger Tr1
+after delete on STUDENTS
+for each row
+begin
+delete from SESSION_HISTORY where Num=:old.Num;
+end Tr1;
+/
+ 
+# Выполнение:
+select * from SESSION_HISTORY;
+delete from STUDENTS where Num=111111;
+select * from SESSION_HISTORY;
+ 
+
+# 2.	Создать триггер на добавление в таблицу STIP новой записи (номер_нового_студента, 1500) при добавлении нового студента в таблицу STUDENTS.
+create or replace trigger Tr2
+after insert on STUDENTS
+for each row
+begin
+insert into STIP values(:new.Num, 
+1500);
+end Tr2;
+/
+ 
+# Выполнение:
+insert into STUDENTS values (111114, 'Peper', 2020, '26.04.1991', '0', 5, '0', 'Miami');
+ 
+select * from STIP;
+ 
+
+# 3.	Создать триггер на изменения поля Money таблицы STUDENTS, если у соответствующего студента изменено поле Plata на значение 1.
+create or replace trigger Tr3
+before update of Plata on STUDENTS
+for each row
+when (new.Plata='1')
+begin
+:new.Money:=:old.Money+10000;
+end Tr3;
+/
+ 
+# Выполнение:
+select * from STUDENTS where Num=111112;
+update STUDENTS set Plata='1' where Num=111112;
+select * from STUDENTS where Num=111112;
+ 
+
+# 4.	Создать триггер на обновление, который изменяет оплату за обучение, если она изменена у первого студента.
+create or replace trigger Tr4
+after update of Money on STUDENTS
+for each row
+declare
+pragma autonomous_transaction;
+cursor students_cursor is select min(Num) from STUDENTS;
+num_tr number;
+begin
+open students_cursor;
+loop
+fetch students_cursor into num_tr;
+exit when students_cursor%notfound;
+if :new.Num=num_tr then
+update STUDENTS set Money=:new.Money where Num <> num_tr;
+end if;
+end loop;
+close students_cursor;
+end Tr4;
+/
